@@ -1,0 +1,39 @@
+@model Firstwebapp.Models.UserModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Successful</title>
+    <link rel ="stylesheet" href="~/css/RegisterSuccess.css"/>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h2>Registration Successful!</h2>
+        
+        <div class="info-box">
+            <div class="info-row">
+                <span class="label">Name:</span>
+                <span class="value">@Model.Name</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Email:</span>
+                <span class="value">@Model.Email</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Age:</span>
+                <span class="value">@Model.Age</span>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <a href="/User/Register" class="button">Register Another</a>
+            <a href="/" class="button secondary">Go Home</a>
+        </div>
+    </div>
+</body>
+</html>
