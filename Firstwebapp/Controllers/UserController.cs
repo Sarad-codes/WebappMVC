@@ -13,10 +13,10 @@ public class UserController : Controller
     [HttpPost]
     public IActionResult Register(UserModel user)
     {
-        if (ModelState.IsValid)
-        {
-            return View("RegistrationSuccess", user);  // Make sure this matches your view filename
-        }
-        return View(user);
+         if (ModelState.IsValid)
+         {
+             return View("RegistrationSuccess", user);  
+         }
+           return View(user);
     }
 }

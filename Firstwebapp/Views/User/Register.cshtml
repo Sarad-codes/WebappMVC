@@ -9,7 +9,6 @@
 <head>
     <title>User Registration</title>
     <link rel="stylesheet" href="~/css/Register.css" />
-    <!-- The ~/ means "from the root of your website" -->
 </head>
 <body class="register-bg">
 <div class="container">
@@ -20,7 +19,7 @@
             
         <div class="form-group">
             <label asp-for="Name"></label>
-            <input asp-for="Name" placeholder="Enter your full name" />
+            <input asp-for="Name" placeholder="Enter your full name"/>
             <span asp-validation-for="Name" class="error"></span>
         </div>
             
