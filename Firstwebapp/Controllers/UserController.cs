@@ -17,6 +17,7 @@ public class UserController : Controller
          {
              return View("RegistrationSuccess", user);  
          }
-           return View(user);
+        
+         return View(user);
     }
 }
