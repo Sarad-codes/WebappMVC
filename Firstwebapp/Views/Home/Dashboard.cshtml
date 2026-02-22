@@ -1,0 +1,201 @@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Just a tiny bit of custom CSS for extra roundness -->
+<style>
+    .rounded-4 { border-radius: 1rem !important; }
+    .rounded-5 { border-radius: 1.5rem !important; }
+    .card { border-radius: 1.25rem !important; overflow: hidden; }
+</style>
+
+<div class="container mt-4">
+    <!-- Header with date -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-chart-pie me-2"></i>Dashboard</h2>
+        <span class="badge bg-primary rounded-pill px-3 py-2">
+            <i class="far fa-calendar-alt me-1"></i>@DateTime.Today.ToString("MMMM dd, yyyy")
+        </span>
+    </div>
+
+    <!-- Summary Cards Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card text-white bg-primary h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-white-50">Active Workers</h6>
+                            <p class="display-4 mb-0">@ViewBag.WorkerCount</p>
+                        </div>
+                        <i class="fas fa-users fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3">
+            <div class="card text-white bg-success h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-white-50">Jobs in Progress</h6>
+                            <p class="display-4 mb-0">@ViewBag.ActiveJobs</p>
+                        </div>
+                        <i class="fas fa-tools fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3">
+            <div class="card text-dark bg-warning h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-dark-50">Pending Payments</h6>
+                            <p class="display-4 mb-0">@ViewBag.PendingPayments</p>
+                        </div>
+                        <i class="fas fa-clock fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-6 col-md-3">
+            <div class="card text-white bg-danger h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-white-50">Outstanding</h6>
+                            <p class="h3 mb-0">$@ViewBag.OutstandingAmount</p>
+                        </div>
+                        <i class="fas fa-dollar-sign fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Jobs Section with Bootstrap Table -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-calendar-day me-2 text-primary"></i>Today's Jobs</h5>
+            <span class="badge bg-primary rounded-pill px-3 py-2">
+                @Model.Count() Job@(Model.Count() != 1 ? "s" : "")
+            </span>
+        </div>
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="p-5 text-center text-muted">
+                    <i class="fas fa-check-circle fa-4x mb-3"></i>
+                    <p class="mb-0">No jobs scheduled for today.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Customer</th>
+                                <th>Time</th>
+                                <th>Worker</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var job in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold">@job.Customer</div>
+                                    </td>
+                                    <td>
+                                        <i class="far fa-clock me-1 text-muted"></i>@job.Time
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                                            <i class="fas fa-user me-1"></i>@job.Worker
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (job.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                                <i class="fas fa-hourglass-half me-1"></i>Pending
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info text-white rounded-pill px-3 py-2">
+                                                <i class="fas fa-spinner me-1"></i>In Progress
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                            <i class="fas fa-eye"></i>
+                                            <span class="d-none d-md-inline ms-1">View</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+        <div class="card-footer bg-white border-0 pb-4 px-4 text-end">
+            <a href="#" class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-plus me-1"></i>Add New Job
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <div class="row g-2">
+                <div class="col-6 col-md-3">
+                    <a href="#" class="btn btn-primary w-100 py-3 border-0 shadow-sm rounded-pill">
+                        <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                        <div class="small fw-semibold">Add Job</div>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="btn btn-success w-100 py-3 border-0 shadow-sm rounded-pill">
+                        <i class="fas fa-clipboard-check fa-2x mb-2"></i>
+                        <div class="small fw-semibold">Attendance</div>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="btn btn-warning w-100 py-3 border-0 shadow-sm rounded-pill">
+                        <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
+                        <div class="small fw-semibold">Record Payment</div>
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="#" class="btn btn-danger w-100 py-3 border-0 shadow-sm rounded-pill">
+                        <i class="fas fa-receipt fa-2x mb-2"></i>
+                        <div class="small fw-semibold">Add Expense</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-outline-secondary rounded-pill px-5 py-2">
+            <i class="fas fa-arrow-left me-2"></i>Back to Home
+        </a>
+    </div>
+</div>
