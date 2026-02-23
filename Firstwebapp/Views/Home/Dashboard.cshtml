@@ -11,7 +11,34 @@
     .card { border-radius: 1.25rem !important; overflow: hidden; }
 </style>
 
-<div class="container mt-4">
+<div class="container-fluid">
+    <!-- Greeting Section -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h5 class="text-secondary mb-1">
+                @{
+                    var hour = DateTime.Now.Hour;
+                    var greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+                }
+                @greeting, User! 👋
+            </h5>
+            <p class="small text-muted mb-0">
+                <i class="far fa-calendar me-1"></i> @DateTime.Today.ToString("dddd, MMMM d")
+            </p>
+        </div>
+        <div class="text-end small text-muted">
+            <div><i class="fas fa-users me-1"></i> 5 workers</div>
+            <div><i class="fas fa-truck me-1"></i> 2 active sites</div>
+        </div>
+    </div>
+
+    <!-- Small progress summary -->
+    <div class="d-flex gap-4 mb-4 small text-muted border-bottom pb-2">
+        <span><i class="fas fa-check-circle text-success me-1"></i> 12 done this week</span>
+        <span><i class="fas fa-clock text-warning me-1"></i> 3 upcoming</span>
+        <span><i class="fas fa-dollar-sign text-primary me-1"></i> $2,800 collected</span>
+    </div>
+
     <!-- Header with date -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-chart-pie me-2"></i>Dashboard</h2>
@@ -19,66 +46,70 @@
             <i class="far fa-calendar-alt me-1"></i>@DateTime.Today.ToString("MMMM dd, yyyy")
         </span>
     </div>
-
-    <!-- Summary Cards Row -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="card text-white bg-primary h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="card-title text-white-50">Active Workers</h6>
-                            <p class="display-4 mb-0">@ViewBag.WorkerCount</p>
-                        </div>
-                        <i class="fas fa-users fa-3x opacity-50"></i>
+    
+    
+    <!-- Summary Cards - Rectangle Style -->
+<div class="row g-3 mb-4">
+    <!-- Workers -->
+    <div class="col-6">
+        <div class="card text-white bg-primary border-0 shadow-sm">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="small text-white-50 text-uppercase">Workers</span>
+                        <h4 class="mb-0 fw-bold">@ViewBag.WorkerCount</h4>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-6 col-md-3">
-            <div class="card text-white bg-success h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="card-title text-white-50">Jobs in Progress</h6>
-                            <p class="display-4 mb-0">@ViewBag.ActiveJobs</p>
-                        </div>
-                        <i class="fas fa-tools fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-6 col-md-3">
-            <div class="card text-dark bg-warning h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="card-title text-dark-50">Pending Payments</h6>
-                            <p class="display-4 mb-0">@ViewBag.PendingPayments</p>
-                        </div>
-                        <i class="fas fa-clock fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-6 col-md-3">
-            <div class="card text-white bg-danger h-100 border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="card-title text-white-50">Outstanding</h6>
-                            <p class="h3 mb-0">$@ViewBag.OutstandingAmount</p>
-                        </div>
-                        <i class="fas fa-dollar-sign fa-3x opacity-50"></i>
-                    </div>
+                    <i class="fas fa-users fa-xl opacity-50"></i>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Jobs -->
+    <div class="col-6">
+        <div class="card text-white bg-success border-0 shadow-sm">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="small text-white-50 text-uppercase">In Progress</span>
+                        <h4 class="mb-0 fw-bold">@ViewBag.ActiveJobs</h4>
+                    </div>
+                    <i class="fas fa-tools fa-xl opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending -->
+    <div class="col-6">
+        <div class="card text-dark bg-warning border-0 shadow-sm">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="small text-dark-50 text-uppercase">Pending</span>
+                        <h4 class="mb-0 fw-bold">@ViewBag.PendingPayments</h4>
+                    </div>
+                    <i class="fas fa-clock fa-xl opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outstanding -->
+    <div class="col-6">
+        <div class="card text-white bg-danger border-0 shadow-sm">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="small text-white-50 text-uppercase">Outstanding</span>
+                        <h5 class="mb-0 fw-bold">$@ViewBag.OutstandingAmount</h5>
+                    </div>
+                    <i class="fas fa-dollar-sign fa-xl opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Today's Jobs Section with Bootstrap Table -->
     <div class="card shadow-sm mb-4 border-0">
         <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
