@@ -1,44 +1,78 @@
 @model Firstwebapp.Models.UserModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Register";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User Registration</title>
-    <link rel="stylesheet" href="~/css/Register.css" />
-</head>
-<body class="register-bg">
-<div class="container">
-    <h2>User Registration</h2>
-        
-    <form asp-action="Register" method="post">
-        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
-            
-        <div class="form-group">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" placeholder="Enter your full name"/>
-            <span asp-validation-for="Name" class="error"></span>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>User Registration</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Register" method="post">
+                        <!-- Validation Summary -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" type="email" placeholder="name@example.com" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Phone Field -->
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input asp-for="Phone" class="form-control" placeholder="9841234567" />
+                            </div>
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                            <small class="text-muted">Enter 10-digit mobile number</small>
+                        </div>
+
+                        <!-- Age Field -->
+                        <div class="mb-3">
+                            <label asp-for="Age" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input asp-for="Age" class="form-control" type="number" min="0" max="100" placeholder="Enter age" />
+                            </div>
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Register
+                            </button>
+                            <a href="/" class="btn btn-outline-secondary">
+                                <i class="fas fa-home me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-            
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" type="email" placeholder="your@email.com" />
-            <span asp-validation-for="Email" class="error"></span>
-        </div>
-            
-        <div class="form-group">
-            <label asp-for="Age"></label>
-            <input asp-for="Age" type="number" placeholder="Enter your age" />
-            <span asp-validation-for="Age" class="error"></span>
-        </div>
-        <div class="button-group">
-            <button type="submit" class="btn">Register</button>
-            <a href="/" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
+    </div>
 </div>
-</body>
-</html>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

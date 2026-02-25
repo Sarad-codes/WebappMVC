@@ -24,7 +24,6 @@ public class HomeController : Controller
     }
     public IActionResult Dashboard()
     {
-        // Sample data for the dashboard
         ViewBag.WorkerCount = 5;
         ViewBag.ActiveJobs = 3;
         ViewBag.PendingPayments = 2;

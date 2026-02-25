@@ -1,39 +1,39 @@
 @model Firstwebapp.Models.UserModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "RegistrationSuccess";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registration Successful</title>
-    <link rel ="stylesheet" href="~/css/RegisterSuccess.css"/>
-</head>
-<body>
-    <div class="container">
-        <div class="success-icon">✓</div>
-        <h2>Registration Successful!</h2>
-        
-        <div class="info-box">
-            <div class="info-row">
-                <span class="label">Name:</span>
-                <span class="value">@Model.Name</span>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-check-circle me-2"></i>Registration Successful!</h4>
+                </div>
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-user-check fa-5x text-success mb-4"></i>
+                    
+                    <h3>Welcome, @Model.Name!</h3>
+                    <p class="text-muted mb-4">Your account has been created successfully.</p>
+                    
+                    <div class="alert alert-light text-start">
+                        <p class="mb-2"><strong><i class="fas fa-user me-2"></i>Name:</strong> @Model.Name</p>
+                        <p class="mb-2"><strong><i class="fas fa-envelope me-2"></i>Email:</strong> @Model.Email</p>
+                        <p class="mb-2"><strong><i class="fas fa-phone me-2"></i>Phone:</strong> @Model.Phone</p>
+                        <p class="mb-0"><strong><i class="fas fa-calendar-alt me-2"></i>Age:</strong> @Model.Age</p>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a asp-action="List" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>View All Users
+                        </a>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Go to Home
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="info-row">
-                <span class="label">Email:</span>
-                <span class="value">@Model.Email</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Age:</span>
-                <span class="value">@Model.Age</span>
-            </div>
-        </div>
-        
-        <div class="buttons">
-            <a href="/User/Register" class="button">Register Another</a>
-            <a href="/" class="button secondary">Go Home</a>
         </div>
     </div>
-</body>
-</html>
+</div>
