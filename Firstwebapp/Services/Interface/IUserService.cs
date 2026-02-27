@@ -1,30 +1,35 @@
 using Firstwebapp.Models;
+using Firstwebapp.ViewModels;  // Add this!
 
 namespace Firstwebapp.Services.Interface
 {
     public interface IUserService
     {
         // Get all users
-        List<UserModel> GetAllUsers();
+        Task<List<UserModel>> GetAllUsers();
         
         // Get one user
-        UserModel GetUserById(Guid id);
+        Task<UserModel> GetUserById(Guid id);
         
-        // Add a new user
-        void AddUser(UserModel user);
+        // Add a new user from UserModel (admin)
+        Task AddUser(UserModel user);
+        
+        // NEW: Add user from RegisterViewModel (registration)
+        Task AddUserFromViewModel(RegisterViewModel model);
         
         // Update a user
-        void UpdateUser(UserModel user);
+        Task UpdateUser(UserModel user);
+        
         // Get only active users
-        List<UserModel> GetActiveUsers();
+        Task<List<UserModel>> GetActiveUsers();
 
-         // Get only inactive users
-        List<UserModel> GetInactiveUsers();
+        // Get only inactive users
+        Task<List<UserModel>> GetInactiveUsers();
         
         // Activate a user
-        void ActivateUser(Guid id);
+        Task ActivateUser(Guid id);
         
-        //Deactive a user
-        void DeactivateUser(Guid id);
+        // Deactivate a user
+        Task DeactivateUser(Guid id);
     }
 }

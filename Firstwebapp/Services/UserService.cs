@@ -1,107 +1,118 @@
-using Dapper;
 using Firstwebapp.Models;
-using Firstwebapp.Provider;
 using Firstwebapp.Services.Interface;
+using Firstwebapp.Data;
+using Microsoft.EntityFrameworkCore;
+using Firstwebapp.ViewModels;  // Add this!
 
 namespace Firstwebapp.Services
 {
     public class UserService : IUserService
     {
-        // Add new user - database generates Guid
-        public void AddUser(UserModel user)
+        private readonly ApplicationDbContext _context;
+
+        public UserService(ApplicationDbContext context)
         {
-            using (var connection = ConnectionProvider.GetConnection())
+            _context = context;
+        }
+
+        // Get all users
+        public async Task<List<UserModel>> GetAllUsers()
+        {
+            return await _context.Users
+                .OrderBy(u => u.Name)
+                .ToListAsync();
+        }
+
+        // Get user by ID
+        public async Task<UserModel> GetUserById(Guid id)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        // Add new user from UserModel (for admin use)
+        public async Task AddUser(UserModel user)
+        {
+            user.Id = Guid.NewGuid();
+            user.Status = UserStatus.Active;
+            
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        // NEW: Add new user from RegisterViewModel (for registration)
+        public async Task AddUserFromViewModel(RegisterViewModel model)
+        {
+            var user = new UserModel
             {
-                connection.Open();
+                Id = Guid.NewGuid(),
+                Name = model.Name,
+                Email = model.Email,
+                Phone = model.Phone,
+                Age = model.Age,
+                Status = UserStatus.Active,
+                CreatedAt = DateTime.UtcNow
+                // Password is handled separately by AuthService
+            };
+            
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        // Update user
+        public async Task UpdateUser(UserModel user)
+        {
+            var existingUser = await _context.Users.FindAsync(user.Id);
+            if (existingUser != null)
+            {
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
+                existingUser.Phone = user.Phone;
+                existingUser.Age = user.Age;
+                existingUser.Status = user.Status;
+                
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // Deactivate user
+        public async Task DeactivateUser(Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                user.Status = UserStatus.Inactive;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // Activate user
+        public async Task ActivateUser(Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
                 user.Status = UserStatus.Active;
-                
-                var sql = @"
-                    INSERT INTO users (name, email, phone, age, status) 
-                    VALUES (@Name, @Email, @Phone, @Age, @Status)
-                    RETURNING id";
-                
-                user.Id = connection.ExecuteScalar<Guid>(sql, user);
+                await _context.SaveChangesAsync();
             }
         }
-        
-        // Get user by Guid
-        public UserModel GetUserById(Guid id)
+
+        // Get active users
+        public async Task<List<UserModel>> GetActiveUsers()
         {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = "SELECT * FROM users WHERE id = @Id";
-                return connection.QueryFirstOrDefault<UserModel>(sql, new { Id = id });
-            }
+            return await _context.Users
+                .Where(u => u.Status == UserStatus.Active)
+                .OrderBy(u => u.Name)
+                .ToListAsync();
         }
-        
-        // Rest of your methods remain the same...
-        public List<UserModel> GetAllUsers()
+
+        // Get inactive users
+        public async Task<List<UserModel>> GetInactiveUsers()
         {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = "SELECT * FROM users ORDER BY name";
-                return connection.Query<UserModel>(sql).ToList();
-            }
-        }
-        
-        public void UpdateUser(UserModel user)
-        {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = @"
-                    UPDATE users 
-                    SET name = @Name, 
-                        email = @Email, 
-                        phone = @Phone, 
-                        age = @Age,
-                        status = @Status
-                    WHERE id = @Id";
-                
-                connection.Execute(sql, user);
-            }
-        }
-        
-        public void DeactivateUser(Guid id)
-        {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = "UPDATE users SET status = @Status WHERE id = @Id";
-                connection.Execute(sql, new { Id = id, Status = UserStatus.Inactive });
-            }
-        }
-        
-        public void ActivateUser(Guid id)
-        {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = "UPDATE users SET status = @Status WHERE id = @Id";
-                connection.Execute(sql, new { Id = id, Status = UserStatus.Active });
-            }
-        }
-        
-        public List<UserModel> GetActiveUsers()
-        {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = "SELECT * FROM users WHERE status = @Status ORDER BY name";
-                return connection.Query<UserModel>(sql, new { Status = UserStatus.Active }).ToList();
-            }
-        }
-        
-        public List<UserModel> GetInactiveUsers()
-        {
-            using (var connection = ConnectionProvider.GetConnection())
-            {
-                connection.Open();
-                var sql = "SELECT * FROM users WHERE status = @Status ORDER BY name";
-                return connection.Query<UserModel>(sql, new { Status = UserStatus.Inactive }).ToList();
-            }
+            return await _context.Users
+                .Where(u => u.Status == UserStatus.Inactive)
+                .OrderBy(u => u.Name)
+                .ToListAsync();
         }
     }
 }

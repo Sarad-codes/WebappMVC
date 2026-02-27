@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Firstwebapp.Models;
 using Firstwebapp.Services.Interface;
 
 namespace Firstwebapp.Controllers
 {
+    [Authorize]  // ALL actions in this controller require login
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -13,60 +15,32 @@ namespace Firstwebapp.Controllers
             _userService = userService;
         }
 
-        // GET: /User/Register
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        // POST: /User/Register
-        [HttpPost]
-        public IActionResult Register(UserModel user)
-        {
-            if (ModelState.IsValid)
-            {
-                _userService.AddUser(user);
-                return RedirectToAction("RegistrationSuccess", new { id = user.Id });
-            }
-            return View(user);
-        }
-
-        // GET: /User/RegistrationSuccess/{id}
-        public IActionResult RegistrationSuccess(Guid id)
-        {
-            var user = _userService.GetUserById(id);
-            if (user == null)
-                return NotFound();
-                
-            return View(user);
-        }
-// GET: /User/List
-// GET: /User/List?filter=Active
-// GET: /User/List?filter=Inactive
-        public IActionResult List(string filter = "All")
+        // GET: /User/List
+        public async Task<IActionResult> List(string filter = "All")
         {
             List<UserModel> users;
     
             switch (filter)
             {
                 case "Active":
-                    users = _userService.GetActiveUsers();
+                    users = await _userService.GetActiveUsers();
                     break;
                 case "Inactive":
-                    users = _userService.GetInactiveUsers();
+                    users = await _userService.GetInactiveUsers();
                     break;
                 default:
-                    users = _userService.GetAllUsers();
+                    users = await _userService.GetAllUsers();
                     break;
             }
     
             ViewBag.CurrentFilter = filter;
             return View(users);
         }
+        
         // GET: /User/Details/{id}
-        public IActionResult Details(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserById(id);
             if (user == null)
                 return NotFound();
                 
@@ -74,9 +48,9 @@ namespace Firstwebapp.Controllers
         }
 
         // GET: /User/Edit/{id}
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserById(id);
             if (user == null)
                 return NotFound();
                 
@@ -85,11 +59,11 @@ namespace Firstwebapp.Controllers
 
         // POST: /User/Edit/{id}
         [HttpPost]
-        public IActionResult Edit(UserModel user)
+        public async Task<IActionResult> Edit(UserModel user)
         {
             if (ModelState.IsValid)
             {
-                _userService.UpdateUser(user);
+                await _userService.UpdateUser(user);
                 return RedirectToAction("Details", new { id = user.Id });
             }
             return View(user);
@@ -97,20 +71,20 @@ namespace Firstwebapp.Controllers
 
         // POST: /User/Deactivate/{id}
         [HttpPost]
-        public IActionResult Deactivate(Guid id)
+        public async Task<IActionResult> Deactivate(Guid id)
         {
-            _userService.DeactivateUser(id);
+            await _userService.DeactivateUser(id);
             TempData["Success"] = "User deactivated successfully";
-            return RedirectToAction("List", new { filter = "All" });  // ← Add filter
+            return RedirectToAction("List", new { filter = "All" });
         }
 
-// POST: /User/Activate/{id}
+        // POST: /User/Activate/{id}
         [HttpPost]
-        public IActionResult Activate(Guid id)
+        public async Task<IActionResult> Activate(Guid id)
         {
-            _userService.ActivateUser(id);
+            await _userService.ActivateUser(id);
             TempData["Success"] = "User activated successfully";
-            return RedirectToAction("List", new { filter = "All" });  // ← Add filter
+            return RedirectToAction("List", new { filter = "All" });
         }
     }
 }
